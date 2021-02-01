@@ -1,8 +1,13 @@
-const money = 10000;
+'use strict';
+const money = +prompt('Ваш месячный доход?');
 const income = 'Фриланс';
-const addExpenses = 'Такси, одежда, кафе';
-const deposit = true;
-const mission = 100000;
+const addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую');
+const expenses1 = prompt('Введите обязательную статью расходов');
+const amount1 = +prompt('Во сколько это обойдётся?');
+const expenses2 = prompt('Введите обязательную статью расходов');
+const amount2 = +prompt('Во сколько это обойдётся?');
+const deposit = confirm('Есть ли у вас депозит в банке?');
+const mission = 200000;
 const period = 12;
 
 // alert('Good day!');
@@ -19,5 +24,15 @@ console.log(`Цель заработать ${mission} долларов`);
 
 console.log(addExpenses.toLowerCase().split(', '));
 
-const budgetDay = money / 30;
-console.log(budgetDay.toFixed(2));
+const budgetMonth = money - amount1 -  amount2;
+console.log('Бюджет на месяц: ', budgetMonth);
+
+console.log(`Цель будет достигнута за ${Math.ceil(mission/budgetMonth)} месяцев(-а)`);
+
+const budgetDay = budgetMonth / 30;
+console.log('Бюджет на день: ', Math.floor(budgetDay));
+
+if (budgetDay >= 1200) console.log('У вас высокий уровень дохода');
+else if (budgetDay >=600) console.log('У вас средний уровень дохода');
+else if (budgetDay>=0 && budgetDay<600) console.log('К сожалению у вас уровень дохода ниже среднего');
+else console.log('Что то пошло не так');
