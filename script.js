@@ -72,3 +72,8 @@ console.log('Цель не будет достигнута');
 console.log(`Цель будет достигнута за ${appData.period} месяцев(-а)`);
 }
 console.log(appData.getStatusIncome());
+
+console.log('Наша программа включает:');
+for (let key in appData){
+ console.log(key + ': ' + appData[key]);
+}
