@@ -26,6 +26,5 @@ book5Chapters[5].before(book5Chapters[2]);
 book5Chapters[8].before(book5Chapters[5]);
 
 const newChapter = document.createElement('li');
-newChapter.textContent = 'Глава 8: За пределами ES6 и поставить её в правильное место';
-//bookCollection[2].append(newChapter);
+newChapter.textContent = 'Глава 8: За пределами ES6';
 book6Chapters[8].after(newChapter);
