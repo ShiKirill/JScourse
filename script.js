@@ -29,6 +29,8 @@ const range = document.querySelector('.period-select');
 const rangeAmount = document.querySelector('.period-amount');
 let incomeItems = document.querySelectorAll('.income-items');
 
+const inputs = document.getElementsByTagName('input');
+
 let isNumber = function(n){
  return (!isNaN(parseFloat(n)) && isFinite(n));
 };
@@ -76,6 +78,9 @@ let appData ={
  },
  addExpensesBlock: function(){
   let cloneExpensesItem = expensesItems[0].cloneNode(true);
+  cloneExpensesItem.childNodes.forEach(function(item){
+   item.value = '';
+  });
   expensesItems[0].parentNode.insertBefore(cloneExpensesItem, buttonExpenses);
   expensesItems = document.querySelectorAll('.expenses-items');
   if (expensesItems.length === 3) {
@@ -84,6 +89,9 @@ let appData ={
  },
  addIncomeBlock: function(){
   let cloneIncomeItem = incomeItems[0].cloneNode(true);
+  cloneIncomeItem.childNodes.forEach(function(item){
+   item.value = '';
+  });
   incomeItems[0].parentNode.insertBefore(cloneIncomeItem, buttonIncome);
   incomeItems = document.querySelectorAll('.income-items');
   if (incomeItems.length ===3) {
@@ -182,4 +190,16 @@ buttonIncome.addEventListener('click', appData.addIncomeBlock);
 
 range.addEventListener('input', function(){
 rangeAmount.textContent = range.value;
+});
+
+Array.from(inputs).forEach(function(item){
+ if (item.getAttribute('placeholder') === 'Наименование' || item.getAttribute('placeholder') === 'название') {
+  item.addEventListener('input',()=> {
+   item.value = item.value.replace(/[^а-яА-Я-.?!)(,: ёЁ]/,'');
+  });
+ } else if (item.getAttribute('placeholder') === 'Сумма') {
+  item.addEventListener('input',()=> {
+   item.value = item.value.replace(/\D/,'');
+  });
+ }
 });
