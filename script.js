@@ -48,11 +48,9 @@ class AppData {
     }
     start () {
         this.budget = +salaryAmount.value;
-        this.getExpenses();
-        this.getIncome();
+        this.getExpInc();
         this.getExpensesMonth();
-        this.getAddExpenses();
-        this.getAddIncome();
+        this.getAddExpInc ();
         this.getBudget();
     
         this.showResult();
@@ -113,23 +111,6 @@ class AppData {
             incomePeriodValue.value = _this.calcSavedMoney();
         });
     }
-    addExpensesBlock () {
-        const cloneExpensesItem = expensesItems[0].cloneNode(true);
-        cloneExpensesItem
-            .childNodes
-            .forEach((item) => {
-                item.value = '';
-            });
-        expensesItems[0]
-            .parentNode
-            .insertBefore(cloneExpensesItem, buttonExpenses);
-        expensesItems = document.querySelectorAll('.expenses-items');
-        inputs = document.getElementsByTagName('input');
-        this.inputEventListener();
-        if (expensesItems.length === 3) {
-            buttonExpenses.style.display = 'none';
-        }
-    }
     resetExpensesBlock () {
         expensesItems = document.querySelectorAll('.expenses-items');
         if (expensesItems.length > 1) {
@@ -139,21 +120,25 @@ class AppData {
         }
         buttonExpenses.style.display = 'block';
     }
-    addIncomeBlock () {
-        const cloneIncomeItem = incomeItems[0].cloneNode(true);
-        cloneIncomeItem
+    addBlock (type) {
+        const cloneItem = type[0].cloneNode(true);
+        const nameStr = cloneItem.className.split('-')[0];
+        const btn = document.querySelector(`.${nameStr}_add`);
+        cloneItem
             .childNodes
             .forEach((item) => {
                 item.value = '';
             });
-        incomeItems[0]
+        type[0]
             .parentNode
-            .insertBefore(cloneIncomeItem, buttonIncome);
-        incomeItems = document.querySelectorAll('.income-items');
+            .insertBefore(cloneItem, btn);
+        type = document.querySelectorAll(`.${nameStr}-items`);
         inputs = document.getElementsByTagName('input');
+        incomeItems = document.querySelectorAll('.income-items');
+        expensesItems = document.querySelectorAll('.expenses-items');
         this.inputEventListener();
-        if (incomeItems.length === 3) {
-            buttonIncome.style.display = 'none';
+        if (type.length === 3) {
+            btn.style.display = 'none';
         }
     }
     resetIncomeBlock () {
@@ -165,52 +150,37 @@ class AppData {
         }
         buttonIncome.style.display = 'block';
     }
-    getExpenses () {
-        expensesItems.forEach((item) => {
-            const itemExpenses = item
-                .querySelector('.expenses-title')
-                .value;
-            const cashExpenses = item
-                .querySelector('.expenses-amount')
-                .value;
-            if (itemExpenses !== '' && cashExpenses !== '') {
-                this.expenses[itemExpenses] = +cashExpenses;
+    getExpInc () {
+        const count = item => {
+            const startStr = item.className.split('-')[0];
+            const itemTitle = item.querySelector(`.${startStr}-title`).value;
+            const itemAmount = item.querySelector(`.${startStr}-amount`).value;
+            if (itemTitle !== '' && itemAmount !== '') {
+                this[startStr][itemTitle] = +itemAmount;
             }
-        });
-    }
-    getIncome () {
-        incomeItems.forEach((item) => {
-            const itemIncome = item
-                .querySelector('.income-title')
-                .value;
-            const cashIncome = item
-                .querySelector('.income-amount')
-                .value;
-            if (itemIncome !== '' && cashIncome !== '') {
-                this.income[itemIncome] = +cashIncome;
-            }
-        });
-    
+        };
+
+        incomeItems.forEach(count);
+        expensesItems.forEach(count);
+
         for (let key in this.income) {
             this.incomeMonth += + this.income[key];
         }
     }
-    getAddExpenses () {
+    getAddExpInc () {
         const addExpenses = additionalExpensesItem
             .value
             .split(',');
-        addExpenses.forEach((item) => {
-            item = item.trim();
+        const addItem = item => {
+            if (item.value === undefined) {
+                item = item.trim();
             if (item !== '') {
                 this
                     .addExpenses
                     .push(item);
             }
-        });
-    }
-    getAddIncome () {
-        additionalIncomeItem.forEach((item) => {
-            let itemValue = item
+            } else {
+                let itemValue = item
                 .value
                 .trim();
             if (itemValue !== '') {
@@ -218,7 +188,10 @@ class AppData {
                     .addIncome
                     .push(itemValue);
             }
-        });
+            }
+        };
+        addExpenses.forEach(addItem);
+        additionalIncomeItem.forEach(addItem);
     }
     getExpensesMonth () {
         for (let key in this.expenses) {
@@ -284,11 +257,14 @@ class AppData {
         return (!isNaN(parseFloat(n)) && isFinite(n));
     }
     eventListeners () {
+        const _this = this;
         buttonCalculate.disabled = true;
         buttonCalculate.addEventListener('click', this.start.bind(this));
         buttonCancel.addEventListener('click', this.reset.bind(this));
-        buttonExpenses.addEventListener('click', this.addExpensesBlock.bind(this));
-        buttonIncome.addEventListener('click', this.addIncomeBlock.bind(this));
+        buttonExpenses.addEventListener('click', event => {
+            this.addBlock(expensesItems);});
+        buttonIncome.addEventListener('click',  event => {
+            this.addBlock(incomeItems);});
         salaryAmount.addEventListener('input', function () {
             if (salaryAmount.value.trim() === '') {
                 buttonCalculate.disabled = true;
@@ -305,3 +281,4 @@ class AppData {
 
 const appData = new AppData();
 appData.eventListeners();
+
