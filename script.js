@@ -60,7 +60,7 @@ class AppData {
         buttonCalculate.style.display = 'none';
         buttonCancel.style.display = 'block';
         const leftInputs = document.querySelectorAll('.data input');
-        leftInputs.forEach(function (item) {
+        leftInputs.forEach((item) => {
             item.disabled = true;
         });
     }
@@ -82,7 +82,7 @@ class AppData {
         inputs = document.getElementsByTagName('input');
         Array
             .from(inputs)
-            .forEach(function (item) {
+            .forEach((item) => {
                 item.value = null;
             });
         range.value = 1;
@@ -91,7 +91,7 @@ class AppData {
         buttonCalculate.style.display = 'block';
         buttonCalculate.disabled = true;
         const leftInputs = document.querySelectorAll('.data input');
-        leftInputs.forEach(function (item) {
+        leftInputs.forEach((item) => {
             item.disabled = false;
         });
     }
@@ -117,7 +117,7 @@ class AppData {
         const cloneExpensesItem = expensesItems[0].cloneNode(true);
         cloneExpensesItem
             .childNodes
-            .forEach(function (item) {
+            .forEach((item) => {
                 item.value = '';
             });
         expensesItems[0]
@@ -143,7 +143,7 @@ class AppData {
         const cloneIncomeItem = incomeItems[0].cloneNode(true);
         cloneIncomeItem
             .childNodes
-            .forEach(function (item) {
+            .forEach((item) => {
                 item.value = '';
             });
         incomeItems[0]
@@ -166,8 +166,7 @@ class AppData {
         buttonIncome.style.display = 'block';
     }
     getExpenses () {
-        const _this = this;
-        expensesItems.forEach(function (item) {
+        expensesItems.forEach((item) => {
             const itemExpenses = item
                 .querySelector('.expenses-title')
                 .value;
@@ -175,13 +174,12 @@ class AppData {
                 .querySelector('.expenses-amount')
                 .value;
             if (itemExpenses !== '' && cashExpenses !== '') {
-                _this.expenses[itemExpenses] = +cashExpenses;
+                this.expenses[itemExpenses] = +cashExpenses;
             }
         });
     }
     getIncome () {
-        const _this = this;
-        incomeItems.forEach(function (item) {
+        incomeItems.forEach((item) => {
             const itemIncome = item
                 .querySelector('.income-title')
                 .value;
@@ -189,36 +187,34 @@ class AppData {
                 .querySelector('.income-amount')
                 .value;
             if (itemIncome !== '' && cashIncome !== '') {
-                _this.income[itemIncome] = +cashIncome;
+                this.income[itemIncome] = +cashIncome;
             }
         });
     
-        for (let key in _this.income) {
-            _this.incomeMonth += + _this.income[key];
+        for (let key in this.income) {
+            this.incomeMonth += + this.income[key];
         }
     }
     getAddExpenses () {
-        const _this = this;
         const addExpenses = additionalExpensesItem
             .value
             .split(',');
-        addExpenses.forEach(function (item) {
+        addExpenses.forEach((item) => {
             item = item.trim();
             if (item !== '') {
-                _this
+                this
                     .addExpenses
                     .push(item);
             }
         });
     }
     getAddIncome () {
-        const _this = this;
-        additionalIncomeItem.forEach(function (item) {
+        additionalIncomeItem.forEach((item) => {
             let itemValue = item
                 .value
                 .trim();
             if (itemValue !== '') {
-                _this
+                this
                     .addIncome
                     .push(itemValue);
             }
@@ -268,7 +264,7 @@ class AppData {
     inputEventListener () {
         Array
             .from(inputs)
-            .forEach(function (item) {
+            .forEach((item) => {
                 if (item.getAttribute('placeholder') === 'Наименование' || item.getAttribute('placeholder') === 'название') {
                     item.addEventListener('input', () => {
                         item.value = item
