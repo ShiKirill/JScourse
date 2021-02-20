@@ -24,6 +24,7 @@ const rangeAmount = document.querySelector('.period-amount');
 const depositBank = document.querySelector('.deposit-bank');
 const depositAmount = document.querySelector('.deposit-amount');
 const depositPercent = document.querySelector('.deposit-percent');
+const rightInputs = document.querySelectorAll('.result input');
 
 let incomeItems = document.querySelectorAll('.income-items');
 let expensesItems = document.querySelectorAll('.expenses-items');
@@ -53,13 +54,11 @@ class AppData {
         this.getBudget();
 
         this.showResult();
+        this.uploadStorage();
 
         buttonCalculate.style.display = 'none';
         buttonCancel.style.display = 'block';
-        const leftInputs = document.querySelectorAll('.data input');
-        leftInputs.forEach((item) => {
-            item.disabled = true;
-        });
+        this.disableLeftPart();
     }
     reset() {
         this.resetExpensesBlock();
@@ -89,9 +88,16 @@ class AppData {
         buttonCancel.style.display = 'none';
         buttonCalculate.style.display = 'block';
         buttonCalculate.disabled = true;
+        this.removeStorage();
         const leftInputs = document.querySelectorAll('.data input');
         leftInputs.forEach((item) => {
             item.disabled = false;
+        });
+    }
+    disableLeftPart(){
+        const leftInputs = document.querySelectorAll('.data input');
+        leftInputs.forEach((item) => {
+            item.disabled = true;
         });
     }
     showResult() {
@@ -240,8 +246,8 @@ class AppData {
             depositPercent.addEventListener('input', () => {
                 console.log(+ depositPercent.value);
                 console.log(typeof + depositPercent.value);
-                if (depositPercent.value <= 100 && depositPercent.value>=0 ) {
-                    if (salaryAmount!== '') {
+                if (depositPercent.value <= 100 && depositPercent.value >= 0) {
+                    if (salaryAmount !== '') {
                         buttonCalculate.disabled = false;
                     }
                 } else {
@@ -299,6 +305,7 @@ class AppData {
     }
     eventListeners() {
         buttonCalculate.disabled = true;
+        document.addEventListener('DOMContentLoaded', this.downloadStorage.bind(this));
         buttonCalculate.addEventListener('click', this.start.bind(this));
         buttonCancel.addEventListener('click', this.reset.bind(this));
         buttonExpenses.addEventListener('click', event => {
@@ -320,7 +327,7 @@ class AppData {
                 } else {
                     buttonCalculate.disabled = false;
                 }
-                
+
             }
         });
         range.addEventListener('input', function () {
@@ -328,6 +335,49 @@ class AppData {
         });
         checkBox.addEventListener('change', this.depositHandler.bind(this));
         this.inputEventListener();
+    }
+    uploadStorage() {
+        const inputsValues = [];
+        rightInputs.forEach(item => {
+            document.cookie = `${item.className.split(' ')[1]} = ${item.value}; max-age=3600`;
+            inputsValues.push(item.value);
+        });
+        const json = JSON.stringify(inputsValues);
+        localStorage.rightInputsValues = json;
+        document.cookie = 'isLoad=true;max-age=3600';
+    }
+    downloadStorage() {
+        if (this.getCookie('isLoad') === undefined) {
+            this.removeStorage();
+            return;
+        } else {
+        rightInputs.forEach(item => {
+            if (this.getCookie(item.className.split(' ')[1]) === undefined) {
+                this.removeStorage();
+                return;
+            }
+        });
+        this.disableLeftPart();
+        buttonCalculate.style.display = 'none';
+        buttonCancel.style.display = 'block';
+        const arr = JSON.parse(localStorage.rightInputsValues);
+        for (let i =0; i< arr.length; i++) {
+            rightInputs[i].value = arr[i]; 
+        }
+    }
+    }
+    getCookie(name) {
+        let matches = document
+            .cookie
+            .match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+    removeStorage() {
+        rightInputs.forEach(item => {
+            document.cookie = `${item.className.split(' ')[1]} = ''; max-age=-1`;
+            document.cookie = `isLoad=false;max-age=-1`;
+        });
+        localStorage.removeItem('rightInputsValues');
     }
 }
 
